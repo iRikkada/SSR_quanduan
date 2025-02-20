@@ -42,7 +42,7 @@
           <hr class="sidebar-divider my-0">
           <!-- Nav Item - Dashboard -->
           <li class="nav-item active">
-              <a class="nav-link" href="text(1).html">
+              <a class="nav-link" href="first_page.html">
                   <i class="fas fa-fw fa-tachometer-alt"></i>
                   <span _msttexthash="8308430" _msthash="3">首页展示</span></a>
           </li>
@@ -60,13 +60,13 @@
           </li>
           <!-- 你可以添加更多导航项 -->
           <li class="nav-item">
-              <a class="nav-link collapsed" href="index.html">
+              <a class="nav-link collapsed" href="XBox.html">
                   <i class="fas fa-fw fa-cog"></i>
                   <span _msttexthash="5055388" _msthash="5">手柄效果</span>
               </a>
           </li>
           <li class="nav-item">
-              <a class="nav-link collapsed" href="index.html">
+              <a class="nav-link collapsed" href="XBox.html">
                   <i class="fas fa-fw fa-wrench"></i>
                   <span _msttexthash="9967711" _msthash="9">水下仿真插入</span>
               </a>
@@ -185,7 +185,7 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">水下温度</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -204,7 +204,7 @@
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
+                                        <canvas id="myAreaChart" width="100" height="37"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -265,35 +265,23 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
                                 </div>
                                 <div class="card-body">
-                                    <h4 class="small font-weight-bold">Server Migration <span
-                                            class="float-right">20%</span></h4>
+                                    <h4 class="small font-weight-bold">YAW <span
+                                            class="float-right" id="yawValue">0°</span></h4>
                                     <div class="progress mb-4">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-danger" id="yawProgress" role="progressbar" style="width: 0%"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <h4 class="small font-weight-bold">Sales Tracking <span
-                                            class="float-right">40%</span></h4>
+                                    <h4 class="small font-weight-bold">PITCH <span
+                                            class="float-right" id="pitchValue">0°</span></h4>
                                     <div class="progress mb-4">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-warning" id="pitchProgress" role="progressbar" style="width: 0%"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <h4 class="small font-weight-bold">Customer Database <span
-                                            class="float-right">60%</span></h4>
+                                    <h4 class="small font-weight-bold">ROW <span
+                                            class="float-right" id="rowValue">0°</span></h4>
                                     <div class="progress mb-4">
-                                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Payout Details <span
-                                            class="float-right">80%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Account Setup <span
-                                            class="float-right">Complete!</span></h4>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar" id="rowProgress" role="progressbar" style="width: 0%"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
                             </div>
@@ -551,6 +539,160 @@ function updateESValue() {
         console.error('未找到ID为 "esValue" 的元素。');
     }
 }
+
+// 生成一个29到35之间的随机整数
+function generateRandomValue() {
+  return Math.floor(Math.random() * (35 - 29 + 1)) + 29;
+}
+
+// 生成初始数据（长度为12，随机数在29到35之间）
+function generateInitialData() {
+  var data = [];
+  for (var i = 0; i < 12; i++) {
+    data.push(generateRandomValue());
+  }
+  return data;
+}
+
+// 初始化X轴标签（这里用数字1到12，你也可以改为月份等）
+var labels = [];
+for (var i = 1; i <= 12; i++) {
+  labels.push(i);
+}
+
+// 获取 canvas 上下文
+var ctxLine = document.getElementById('myAreaChart').getContext('2d');
+
+// 创建折线图（动画配置中关闭 y 轴动画，保留 x 轴动画）
+var myAreaChart = new Chart(ctxLine, {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [{
+      label: '销量',
+      data: generateInitialData(),
+      borderColor: 'rgba(75, 192, 192, 1)',
+      tension: 0.4,
+      fill: false
+    }]
+  },
+  options: {
+    animations: {
+      x: { duration: 1000 },
+      y: { duration: 0 }
+    },
+    scales: {
+      y: {
+        min: 20,
+        max: 40
+      }
+    }
+  }
+});
+
+// 每隔3秒更新数据：左移一格、右侧添加新数据
+setInterval(function() {
+  // 移除最左侧标签，并添加新的标签（使X轴数据整体左移）
+  myAreaChart.data.labels.shift();
+  myAreaChart.data.labels.push(myAreaChart.data.labels[myAreaChart.data.labels.length - 1] + 1);
+  
+  // 移除最左侧数据，追加一个新的随机数（范围29~35）
+  myAreaChart.data.datasets[0].data.shift();
+  myAreaChart.data.datasets[0].data.push(generateRandomValue());
+  
+  // 更新图表
+  myAreaChart.update();
+}, 3000);
+
+// 定义GraphQL查询
+const GET_JOYSTICK_DATA = `
+  query {
+    joystick {
+      YOW
+      PITCH
+      ROW
+    }
+  }
+`;
+
+function updateEulerAngles(yaw, pitch, row) {
+    // 更新YAW显示值
+    const yawValueText = document.getElementById('yawValue');
+    yawValueText.textContent = yaw.toFixed(1) + '°';  // 保留一位小数
+
+    // 更新PITCH显示值
+    const pitchValueText = document.getElementById('pitchValue');
+    pitchValueText.textContent = pitch.toFixed(1) + '°';
+
+    // 更新ROW显示值
+    const rowValueText = document.getElementById('rowValue');
+    rowValueText.textContent = row.toFixed(1) + '°';
+}
+
+// 更新进度条和显示的函数
+function updateProgressBar(yaw, pitch, row) {
+    // 更新YAW进度条
+    const yawProgressBar = document.getElementById('yawProgress');
+    const yawValueText = document.getElementById('yawValue');
+    yawProgressBar.style.width = yaw + '%';  // 更新进度条的宽度
+    yawProgressBar.setAttribute('aria-valuenow', yaw);  // 更新aria值
+    yawValueText.textContent = yaw.toFixed(1) + '°';  // 更新显示的百分比
+
+    // 更新PITCH进度条
+    const pitchProgressBar = document.getElementById('pitchProgress');
+    const pitchValueText = document.getElementById('pitchValue');
+    pitchProgressBar.style.width = pitch + '%';
+    pitchProgressBar.setAttribute('aria-valuenow', pitch);
+    pitchValueText.textContent = pitch.toFixed(1) + '°';  // 显示为小数
+
+    // 更新ROW进度条
+    const rowProgressBar = document.getElementById('rowProgress');
+    const rowValueText = document.getElementById('rowValue');
+    rowProgressBar.style.width = row + '%';
+    rowProgressBar.setAttribute('aria-valuenow', row);
+    rowValueText.textContent = row.toFixed(1) + '°';  // 显示为小数
+}
+
+// 使用fetch发送GraphQL请求
+function fetchJoystickData() {
+    fetch('http://localhost:5000/graphql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            query: GET_JOYSTICK_DATA,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        const joystickData = data.data.joystick;
+        if (!joystickData) {
+            console.log('Joystick data not available');
+            return;
+        }
+
+        // 获取YAW、PITCH、ROW的数据
+        const yaw = joystickData.YOW; // 假设返回的数据格式与此类似
+        const pitch = joystickData.PITCH;
+        const row = joystickData.ROW;
+
+        // 更新进度条
+        updateProgressBar(yaw, pitch, row);
+        updateEulerAngles(yaw, pitch, row);
+    })
+    .catch(error => {
+        console.error('Error fetching joystick data:', error);
+    });
+}
+
+// 设置定时器，每隔1秒获取一次数据
+setInterval(fetchJoystickData, 1000);
+
+
+
+// 设置定时器，每隔1秒调用一次GraphQL查询
+setInterval(fetchJoystickData, 10); // 1000ms = 1秒
 
 // 设置定时器，每秒更新一次PH值
 setInterval(updatePHValue, 1000);
